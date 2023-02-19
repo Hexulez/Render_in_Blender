@@ -5,7 +5,85 @@
 #include <vector>
 #include <string>
 #include <Windows.h>
+#include <fstream>
 
+bool BatTest();
+void MakeBat();
+std::wstring GetFilePath();
+void render_blend_file(const std::string& file_path);
+void render_multiple_files(const std::vector<std::string>& file_list);
+void errorHandle();
+
+
+
+int main() {
+    std::vector<std::string> file_list;
+
+    errorHandle();
+    // Prompt the user to select files
+    while (true) {
+        std::wstring file_path_wide = GetFilePath();
+        if (file_path_wide.empty()) {
+            break;
+        }
+        std::string file_path(file_path_wide.begin(), file_path_wide.end());
+        file_list.push_back(file_path);
+    }
+
+    if (file_list.empty()) {
+        std::cout << "No files selected." << std::endl;
+        return 0;
+    }
+
+    render_multiple_files(file_list);
+
+    return 0;
+}
+
+void errorHandle() {
+    if (BatTest() == 0) {
+        MakeBat();
+        system("blender_path.bat");
+    }
+    
+    
+}
+
+bool BatTest() {
+    std::ifstream batFile("blender_path.bat");
+    if (batFile.is_open())
+    {
+        std::cout << "Batch file found." << std::endl;
+        batFile.close();
+        return 1;
+    }
+    std::cout << "Batch file not found." << std::endl;
+    return 0;
+
+}
+
+void MakeBat() {
+    std::ofstream batFile("blender_path.bat");
+    if (batFile.is_open())
+    {
+
+        
+            
+        
+
+        
+        batFile << "@echo off" << std::endl;
+        batFile << "set /p blenderpath=Enter the path to the Blender executable:" << std::endl;
+        batFile << "setx PATH \"%blenderpath%;%PATH%\"" << std::endl;
+        //batFile << "echo." << std::endl;
+        //batFile << "echo The Blender executable has been added to the system's path." << std::endl;
+        batFile.close();
+    }
+    else
+    {
+        std::cout << "Unable to create batch file." << std::endl;
+    }
+}
 
 
 //Open file explorer and return the path of the selected file
@@ -40,6 +118,7 @@ void render_blend_file(const std::string& file_path) {
     int result = system(cmd.c_str());
     if (result != 0) {
         std::cerr << "Error rendering file: " << file_path << std::endl;
+       
     }
 }
 
@@ -50,28 +129,6 @@ void render_multiple_files(const std::vector<std::string>& file_list) {
     }
 }
 
-int main() {
-    std::vector<std::string> file_list;
-
-    // Prompt the user to select files
-    while (true) {
-        std::wstring file_path_wide = GetFilePath();
-        if (file_path_wide.empty()) {
-            break;
-        }
-        std::string file_path(file_path_wide.begin(), file_path_wide.end());
-        file_list.push_back(file_path);
-    }
-
-    if (file_list.empty()) {
-        std::cout << "No files selected." << std::endl;
-        return 0;
-    }
-
-    render_multiple_files(file_list);
-
-    return 0;
-}
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
