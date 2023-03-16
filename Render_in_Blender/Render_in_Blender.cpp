@@ -10,14 +10,14 @@
 bool BatTest();
 void MakeBat();
 std::wstring GetFilePath();
-void render_blend_file(const std::string& file_path);
-void render_multiple_files(const std::vector<std::string>& file_list);
+void render_blend_file(const std::wstring& file_path);
+void render_multiple_files(const std::vector<std::wstring>& file_list);
 void errorHandle();
 
 
 
 int main() {
-    std::vector<std::string> file_list;
+    std::vector<std::wstring> file_list;
 
     errorHandle();
     // Prompt the user to select files
@@ -26,7 +26,7 @@ int main() {
         if (file_path_wide.empty()) {
             break;
         }
-        std::string file_path(file_path_wide.begin(), file_path_wide.end());
+        std::wstring file_path(file_path_wide.begin(), file_path_wide.end());
         file_list.push_back(file_path);
     }
 
@@ -113,17 +113,17 @@ std::wstring GetFilePath()
 }
 
 //Use blender to render the file
-void render_blend_file(const std::string& file_path) {
-    std::string cmd = "blender -b " + file_path + " -o //render_output -a ";
-    int result = system(cmd.c_str());
+void render_blend_file(const std::wstring& file_path) {
+    std::wstring cmd = L"blender -b " + file_path + L" -o //render_output -a ";
+    int result = _wsystem(cmd.c_str());
     if (result != 0) {
-        std::cerr << "Error rendering file: " << file_path << std::endl;
+        std::wcerr << "Error rendering file: " << file_path << std::endl;
        
     }
 }
 
 //Render all the files in the list
-void render_multiple_files(const std::vector<std::string>& file_list) {
+void render_multiple_files(const std::vector<std::wstring>& file_list) {
     for (const auto& file_path : file_list) {
         render_blend_file(file_path);
     }
