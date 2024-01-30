@@ -114,11 +114,12 @@ std::wstring GetFilePath()
 
 //Use blender to render the file
 void render_blend_file(const std::wstring& file_path) {
-    std::wstring cmd = L"blender -b " + file_path + L" -o //render_output -a ";
+    std::wstring cmd = L"blender -b \"" + file_path + L"\" -o //render_output -a ";
+    //std::wstring cmd = L"blender -b " + file_path + L" -o //render_output -a ";
     int result = _wsystem(cmd.c_str());
     if (result != 0) {
         std::wcerr << "Error rendering file: " << file_path << std::endl;
-       
+
     }
 }
 
